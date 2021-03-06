@@ -46,7 +46,7 @@ bool ImGuiExampleApp::Open()
 		// set clear color to whatever color you want
 		glClearColor(0.f, 0.f, 0.f, 0.0f);
 
-
+		//adding comment 
 
 		//Initial rules for L-system
 		std::vector<LsystemPart> lista;
