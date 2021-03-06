@@ -130,10 +130,10 @@ bool ImGuiExampleApp::Open()
 		//Making resources
 		Gnode.pointerSetup();
 		//Setting up mesh, texture and shader resources
-		Gnode.setup();
+		//Gnode.setup();
 		
-
-		//Gnode.setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
+		
+		Gnode.setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
 		//Making resources
 		LeafNode.pointerSetup();
 		//Setting up mesh, texture and shader resources
@@ -396,12 +396,13 @@ ImGuiExampleApp::Run()
 		Light.sendValuesToUniform(*Gnode.getShaderO());
 
 		//draw 
-		for (int i = 0; i < nodeList.size(); i++) {
+		Gnode.draw();
+		//for (int i = 0; i < nodeList.size(); i++) {
 
-			
-			nodeList[i].draw();
-		}
-	
+		//	
+		//	nodeList[i].draw();
+		//}
+	/*
 		//Swap to leaf shader resoruce
 		LeafNode.ShaderO->UseProgram();
 		LeafNode.ShaderO->ModMat4fv("view", myCam.view);
@@ -414,6 +415,8 @@ ImGuiExampleApp::Run()
 				LeafList[i].draw();
 			}
 		}
+
+		*/
 		// transfer new frame to window
 		this->window->SwapBuffers();
 	}

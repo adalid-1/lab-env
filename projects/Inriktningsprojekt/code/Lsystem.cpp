@@ -72,16 +72,16 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 	LeafList.clear();
 	lSysInt.segmentList.clear();
 	// if pressed we compile the shaders
-	buildTree(n, randAngleRange, randLengthRange);
+	//buildTree(n, randAngleRange, randLengthRange);
 
 
 	for (int i = 0; i <lSysInt.segmentList.size(); i++) {
 
 		//std::cout << treeGenerator.lSysInt.positions[i].getX() << " " << treeGenerator.lSysInt.positions[i].getY() * 2.f << " " << treeGenerator.lSysInt.positions[i].getZ() << std::endl;
-		GraphicsNode temp = GraphicsNode();
+		//GraphicsNode temp = GraphicsNode();
 
 
-		temp.getPtrsFromOtherNode(Gnode);
+		//temp.getPtrsFromOtherNode(Gnode);
 		
 		//temp.setup();
 
@@ -104,9 +104,9 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 		//treeGenerator.lSysInt.posRot[i].set(0, 0.5);
 		//treeGenerator.lSysInt.segmentList[i].transform.setPosition(treeGenerator.lSysInt.positions[i]);
 		//treeGenerator.lSysInt.segmentList[i].transform = treeGenerator.lSysInt.segmentList[i].transform * scalingMat;
-		temp.transform = lSysInt.segmentList[i].transform;
+		//temp.transform = lSysInt.segmentList[i].transform;
 		//temp.transform.setPosition(treeGenerator.lSysInt.positions[i]);
-		nodeList.push_back(temp);
+		//nodeList.push_back(temp);
 
 		
 		

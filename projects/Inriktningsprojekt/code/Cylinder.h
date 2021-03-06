@@ -2,7 +2,8 @@
 #include "core/app.h"
 #include <vector>
 #include <iostream>
-
+#include "Matrix4D.h"
+#include "Vector4D.h"
 class Cylinder {
 
 
@@ -29,7 +30,7 @@ public:
 
 	void formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata);
 
-	void formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset);
+	void formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset, Matrix4D transform);
 	
 
 	void clearArrays();

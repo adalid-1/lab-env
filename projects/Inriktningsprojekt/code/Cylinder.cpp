@@ -38,26 +38,34 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 
 }
 
-void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset)
+void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset, Matrix4D transform)
 {
+	int off = indices.size() * offset;
+	Vector4D pos;
+	Vector4D normals;
 	//stuffs vertex data into a float vector
 	for (int i = 0, j = 0; i < vertices.size() - 2; i += 3, j += 2)
 	{
-		vertexdata.push_back(vertices[i]);
-		vertexdata.push_back(vertices[i + 1]);
-		vertexdata.push_back(vertices[i + 2]);
+		pos.setXYZW(vertices[i], vertices[i + 1], vertices[i + 2], 1);
+		pos = transform.getPosition() + pos;
+		vertexdata.push_back(pos.getX());
+		vertexdata.push_back(pos.getY());
+		vertexdata.push_back(pos.getZ());
 
 		vertexdata.push_back(texCoords[j]);
 		vertexdata.push_back(texCoords[j + 1]);
-
-		vertexdata.push_back(normals[i]);
-		vertexdata.push_back(normals[i + 1]);
-		vertexdata.push_back(normals[i + 2]);
+		
+		normals.setXYZW(normals[i], normals[i + 1], normals[i + 2], 0);
+		transform.set(15, 0);
+		normals = transform * normals;
+		vertexdata.push_back(normals.getX());
+		vertexdata.push_back(normals.getY());
+		vertexdata.push_back(normals.getZ());
 	}
 
 
 	for (int i = 0; i < indices.size(); i++) {
-		indexdata.push_back(indices[i] + offset);
+		indexdata.push_back(indices[i] + off);
 	}
 	std::cout << vertexdata.size() << std::endl;
 	std::cout << indexdata.size() << std::endl;
