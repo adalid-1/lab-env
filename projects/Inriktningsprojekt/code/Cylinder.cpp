@@ -43,11 +43,21 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 	int off = indices.size() * offset;
 	Vector4D pos;
 	Vector4D normals;
+	Matrix4D mat3d = transform;
+	//mat3d.set(15, 0);
+	//mat3d.set(14, 0);
+	//mat3d.set(13, 0);
+	//mat3d.set(12, 0);
+	//mat3d.set(11, 0);
+	//mat3d.set(7, 0);
+	//mat3d.set(3, 0);
+	//mat3d = mat3d.Invert(mat3d.transpose());
 	//stuffs vertex data into a float vector
 	for (int i = 0, j = 0; i < vertices.size() - 2; i += 3, j += 2)
 	{
+		
 		pos.setXYZW(vertices[i], vertices[i + 1], vertices[i + 2], 1);
-		pos = transform.getPosition() + pos;
+		pos = transform * pos;
 		vertexdata.push_back(pos.getX());
 		vertexdata.push_back(pos.getY());
 		vertexdata.push_back(pos.getZ());
@@ -56,8 +66,10 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 		vertexdata.push_back(texCoords[j + 1]);
 		
 		normals.setXYZW(normals[i], normals[i + 1], normals[i + 2], 0);
-		transform.set(15, 0);
-		normals = transform * normals;
+
+
+
+		normals = normals.unitVector( mat3d * normals);
 		vertexdata.push_back(normals.getX());
 		vertexdata.push_back(normals.getY());
 		vertexdata.push_back(normals.getZ());
@@ -282,7 +294,7 @@ void Cylinder::set(float baseRadius, float topRadius, float height, int sectors,
 	// generate unit circle vertices first
 	buildUnitCircleVertices();
 
-	if (smooth){ buildVertices(); }
+	if (smooth){ buildVerticesSmooth(); }
 		
 	else {//buildVerticesFlat();
 	}
@@ -540,4 +552,123 @@ std::vector<float> Cylinder::computeFaceNormal(float x1, float y1, float z1,  //
 	}
 
 	return normal;
+}
+
+
+
+void Cylinder::buildVerticesSmooth()
+{
+	// clear memory of prev arrays
+	clearArrays();
+
+	float x, y, z;                                  // vertex position
+	//float s, t;                                     // texCoord
+	float radius;                                   // radius for each stack
+
+	// get normals for cylinder sides
+	std::vector<float> sideNormals = getSideNormals();
+
+	// put vertices of side cylinder to array by scaling unit circle
+	for (int i = 0; i <= stackCount; ++i)
+	{
+		z = -(height * 0.5f) + (float)i / stackCount * height;      // vertex position z
+		radius = baseRadius + (float)i / stackCount * (topRadius - baseRadius);     // lerp
+		float t = 1.0f - (float)i / stackCount;   // top-to-bottom
+
+		for (int j = 0, k = 0; j <= sectorCount; ++j, k += 3)
+		{
+			x = unitCircleVertices[k];
+			y = unitCircleVertices[k + 1];
+			addVertex(x * radius, y * radius, z);   // position
+			addNormal(sideNormals[k], sideNormals[k + 1], sideNormals[k + 2]); // normal
+			addTexCoord((float)j / sectorCount, t); // tex coord
+		}
+	}
+
+	// remember where the base.top vertices start
+	unsigned int baseVertexIndex = (unsigned int)vertices.size() / 3;
+
+	// put vertices of base of cylinder
+	z = -height * 0.5f;
+	addVertex(0, 0, z);
+	addNormal(0, 0, -1);
+	addTexCoord(0.5f, 0.5f);
+	for (int i = 0, j = 0; i < sectorCount; ++i, j += 3)
+	{
+		x = unitCircleVertices[j];
+		y = unitCircleVertices[j + 1];
+		addVertex(x * baseRadius, y * baseRadius, z);
+		addNormal(0, 0, -1);
+		addTexCoord(-x * 0.5f + 0.5f, -y * 0.5f + 0.5f);    // flip horizontal
+	}
+
+	// remember where the base vertices start
+	unsigned int topVertexIndex = (unsigned int)vertices.size() / 3;
+
+	// put vertices of top of cylinder
+	z = height * 0.5f;
+	addVertex(0, 0, z);
+	addNormal(0, 0, 1);
+	addTexCoord(0.5f, 0.5f);
+	for (int i = 0, j = 0; i < sectorCount; ++i, j += 3)
+	{
+		x = unitCircleVertices[j];
+		y = unitCircleVertices[j + 1];
+		addVertex(x * topRadius, y * topRadius, z);
+		addNormal(0, 0, 1);
+		addTexCoord(x * 0.5f + 0.5f, -y * 0.5f + 0.5f);
+	}
+
+	// put indices for sides
+	unsigned int k1, k2;
+	for (int i = 0; i < stackCount; ++i)
+	{
+		k1 = i * (sectorCount + 1);     // bebinning of current stack
+		k2 = k1 + sectorCount + 1;      // beginning of next stack
+
+		for (int j = 0; j < sectorCount; ++j, ++k1, ++k2)
+		{
+			// 2 trianles per sector
+			addIndices(k1, k1 + 1, k2);
+			addIndices(k2, k1 + 1, k2 + 1);
+
+			// vertical lines for all stacks
+			lineIndices.push_back(k1);
+			lineIndices.push_back(k2);
+			// horizontal lines
+			lineIndices.push_back(k2);
+			lineIndices.push_back(k2 + 1);
+			if (i == 0)
+			{
+				lineIndices.push_back(k1);
+				lineIndices.push_back(k1 + 1);
+			}
+		}
+	}
+
+	// remember where the base indices start
+	baseIndex = (unsigned int)indices.size();
+
+	// put indices for base
+	for (int i = 0, k = baseVertexIndex + 1; i < sectorCount; ++i, ++k)
+	{
+		if (i < (sectorCount - 1))
+			addIndices(baseVertexIndex, k + 1, k);
+		else    // last triangle
+			addIndices(baseVertexIndex, baseVertexIndex + 1, k);
+	}
+
+	// remember where the base indices start
+	topIndex = (unsigned int)indices.size();
+
+	for (int i = 0, k = topVertexIndex + 1; i < sectorCount; ++i, ++k)
+	{
+		if (i < (sectorCount - 1))
+			addIndices(topVertexIndex, k, k + 1);
+		else
+			addIndices(topVertexIndex, k, topVertexIndex + 1);
+	}
+
+	// generate interleaved vertex array as well
+//	buildInterleavedVertices();
 }

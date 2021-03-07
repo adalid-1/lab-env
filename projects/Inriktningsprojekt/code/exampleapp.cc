@@ -125,7 +125,7 @@ bool ImGuiExampleApp::Open()
 		treeGenerator.setRules(treeGenerator.generateProductions(lista));
 		//skicka in statiska regler
 		treeGenerator.setRules(lista2);
-		treeGenerator.setN(2);
+		treeGenerator.setN(4);
 		treeGenerator.buildTree(treeGenerator.getN(), 0, 0);
 		//Making resources
 		Gnode.pointerSetup();
@@ -492,6 +492,7 @@ void ImGuiExampleApp::RenderUI()
 			//std::cout << treeGenerator.getN();
 			std::cout << treeGenerator.lSysInt.segmentList.size() << std::endl;
 			}
+			std::cout << treeGenerator.getN() << std::endl;
 		}
 		if (Gnode.ShaderO->compilerLog.length())
 		{

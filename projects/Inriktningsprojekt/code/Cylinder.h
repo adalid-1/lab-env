@@ -17,6 +17,8 @@ public:
 		float x2, float y2, float z2,  // v2
 		float x3, float y3, float z3);  // v3
 
+	void buildVerticesSmooth();
+
 
 	void printSelf() const;
 

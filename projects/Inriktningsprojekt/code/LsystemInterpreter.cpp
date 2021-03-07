@@ -263,14 +263,14 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 	for (int segment = 0; segment < segmentList.size(); segment++) {
 		segmentList[segment].thickness = (thickRange / (segmentList[segment].thickness * 10));
 		std::cout << "nr of successors: "<< segmentList[segment].nrOfSuccessors << std::endl;
-		Matrix4D scalingMat;
-		scalingMat[0] = segmentList[segment].thickness;
-		scalingMat[5] = segmentList[segment].thickness;
-		scalingMat[10] = segmentList[segment].length * 1.5;
-		scalingMat[15] = 3;
+		//Matrix4D scalingMat;
+		//scalingMat[0] = segmentList[segment].thickness;
+		//scalingMat[5] = segmentList[segment].thickness;
+		segmentList[segment].length = segmentList[segment].length * 1.5;
+		//scalingMat[15] = 3;
 
 
-		segmentList[segment].transform = segmentList[segment].transform * scalingMat;
+		//segmentList[segment].transform = segmentList[segment].transform * scalingMat;
 	}
 
 }
