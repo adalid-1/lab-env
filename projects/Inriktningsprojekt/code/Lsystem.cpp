@@ -70,7 +70,7 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 	//srand((unsigned)time(0));
 	nodeList.clear();
 	LeafList.clear();
-	lSysInt.segmentList.clear();
+	//lSysInt.segmentList.clear();
 	// if pressed we compile the shaders
 	//buildTree(n, randAngleRange, randLengthRange);
 
@@ -93,8 +93,7 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 			std::cout << "x: " << lSysInt.segmentList[i].position1.getX() << "y: " << lSysInt.segmentList[i].position1.getY() << "z: " << lSysInt.segmentList[i].position1.getZ() << endl;
 			Matrix4D scale = Matrix4D();
 			scale.set(15, 15.f);
-			//scale.set(5,1/ 15.f);
-			//scale.set(10, 1 / 5.f);
+
 			LeafNode.transform = LeafNode.transform * scale;
 			tempLeaf.transform = tempLeaf.transform * scale;
 			std::cout << "let there be  leaves!" << std::endl;
@@ -108,7 +107,7 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 		//temp.transform.setPosition(treeGenerator.lSysInt.positions[i]);
 		//nodeList.push_back(temp);
 
-		
+		std::cout << LeafList.size() << std::endl;
 		
 	}
 

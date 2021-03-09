@@ -54,6 +54,7 @@ void LsystemInterpreter::rotateZbyAngle(float radians)
 
 void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange)
 {
+	segmentList.clear();
 	//Resets values before running function
 	//Thickness of current segment
 	thicknessFactor = 0;
@@ -199,7 +200,7 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 			//start branch
 			else if (sentence[i] == '[')
 			{
-				if (segmentList[previous].branchDepth < 3) {
+				if (segmentList[previous].branchDepth < 0) {
 					skipBranch = true;
 				}
 				else {
@@ -255,23 +256,26 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 				branchLevelTracker--;
 			}
 		}
-		dist -= dist / (segmentLengthReduction * 6 * segmentList[previous].thickness);
+		//dist -= dist / (segmentLengthReduction * 6 * segmentList[previous].thickness);
 	}
-
-	float thickRange = 0.4 * sqrt(segmentList.size()) - 0.02;
+	
+	float thickRange = 0.4 * sqrt(segmentList.size()) ;
 	//float step = thickRange / segmentList.size();
 	for (int segment = 0; segment < segmentList.size(); segment++) {
-		segmentList[segment].thickness = (thickRange / (segmentList[segment].thickness * 10));
+		segmentList[segment].thickness = (thickRange / ((2 + segmentList[segment].thickness) * 10 ));
 		std::cout << "nr of successors: "<< segmentList[segment].nrOfSuccessors << std::endl;
 		//Matrix4D scalingMat;
 		//scalingMat[0] = segmentList[segment].thickness;
 		//scalingMat[5] = segmentList[segment].thickness;
-		segmentList[segment].length = segmentList[segment].length * 1.5;
+		segmentList[segment].length = segmentList[segment].length ;
 		//scalingMat[15] = 3;
 
 
 		//segmentList[segment].transform = segmentList[segment].transform * scalingMat;
 	}
+
+	successorsMain = checkSuccessors(1);
+	std::cout << "successors main: " << successorsMain << std::endl;
 
 }
 

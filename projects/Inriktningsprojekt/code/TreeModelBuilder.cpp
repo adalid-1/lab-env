@@ -6,7 +6,7 @@ void TreeModelBuilder::buildTreeModel(std::vector<Segment> treeSegments)
 	vertices.clear();
 	//Gör en cylinder för varje segment och pusha back den i vertices 
 	for (int i = 0; i < treeSegments.size(); i++) {
-		cylinder = new Cylinder(treeSegments[i].thickness, treeSegments[i].thickness , treeSegments[i].length , 6, 6, true);
+		cylinder = new Cylinder(treeSegments[i].thickness , treeSegments[i].thickness, treeSegments[i].length, 6, 6, true);
 		cylinder->formatData(indices, vertices, i, treeSegments[i].transform);
 		
 		//indices måste bli indices + sissta indexet i indices ??

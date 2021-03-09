@@ -10,6 +10,11 @@ Cylinder::Cylinder(float baseRadius, float topRadius, float height, int sectors,
 {
 	set(baseRadius, topRadius, height, sectors, stacks, smooth);
 }
+Cylinder::Cylinder(float baseRadius, float topRadius, float height, int sectors,
+	int stacks, bool smooth, Vector4D position)
+{
+	set(baseRadius, topRadius, height, sectors, stacks, smooth, position);
+}
 
 void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata)
 {
@@ -40,23 +45,26 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 
 void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset, Matrix4D transform)
 {
-	int off = indices.size() * offset;
-	Vector4D pos;
-	Vector4D normals;
-	Matrix4D mat3d = transform;
-	//mat3d.set(15, 0);
-	//mat3d.set(14, 0);
-	//mat3d.set(13, 0);
-	//mat3d.set(12, 0);
-	//mat3d.set(11, 0);
-	//mat3d.set(7, 0);
-	//mat3d.set(3, 0);
-	//mat3d = mat3d.Invert(mat3d.transpose());
+	int off = offset * 63;
+	std::cout << transform.getPosition().getX() << "-" << transform.getPosition().getY() << "-" << transform.getPosition().getZ() << std::endl;
 	//stuffs vertex data into a float vector
+	Matrix4D mat3d = transform;
+	mat3d.set(15, 0);
+	mat3d.set(14, 0);
+	mat3d.set(13, 0);
+	mat3d.set(12, 0);
+	mat3d.set(11, 0);
+	mat3d.set(7, 0);
+	mat3d.set(3, 0);
+
 	for (int i = 0, j = 0; i < vertices.size() - 2; i += 3, j += 2)
 	{
-		
-		pos.setXYZW(vertices[i], vertices[i + 1], vertices[i + 2], 1);
+		//vertexdata.push_back(vertices[i]+ (transform.getPosition().getX()));
+		//vertexdata.push_back(vertices[i + 1] + (transform.getPosition().getY() + offset));
+		//vertexdata.push_back(vertices[i + 2] + transform.getPosition().getZ());
+		Vector4D pos = Vector4D(vertices[i], vertices[i + 1], vertices[i + 2], 1);
+		//pos = transform.getPosition() + pos;
+		//pos = mat3d.RotationZ(1.5708) *pos;
 		pos = transform * pos;
 		vertexdata.push_back(pos.getX());
 		vertexdata.push_back(pos.getY());
@@ -65,34 +73,90 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 		vertexdata.push_back(texCoords[j]);
 		vertexdata.push_back(texCoords[j + 1]);
 		
-		normals.setXYZW(normals[i], normals[i + 1], normals[i + 2], 0);
-
-
-
-		normals = normals.unitVector( mat3d * normals);
-		vertexdata.push_back(normals.getX());
-		vertexdata.push_back(normals.getY());
-		vertexdata.push_back(normals.getZ());
+		Vector4D normal = Vector4D(normals[i], normals[i + 1], normals[i + 2],0);
+		normal = normal.unitVector( mat3d * normal);
+		vertexdata.push_back(normal.getX());
+		vertexdata.push_back(normal.getY());
+		vertexdata.push_back(normal.getZ());
 	}
 
 
 	for (int i = 0; i < indices.size(); i++) {
-		indexdata.push_back(indices[i] + off);
+		int index = ((i + 1) * off) - 1;
+		indexdata.push_back((indices[i] +off));
 	}
 	std::cout << vertexdata.size() << std::endl;
 	std::cout << indexdata.size() << std::endl;
 
 
 }
+//void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset, Matrix4D transform)
+//{
+//	int off = 36 * offset;
+//	Vector4D pos;
+//	Vector4D normals;
+//	Matrix4D mat3d = transform;
+//	mat3d.set(15, 0);
+//	mat3d.set(14, 0);
+//	mat3d.set(13, 0);
+//	mat3d.set(12, 0);
+//	mat3d.set(11, 0);
+//	mat3d.set(7, 0);
+//	mat3d.set(3, 0);
+//	//transform = transform.matrixScalarProduct(7);
+//	//transform.translate(Vector4D(0, offset, 0, 0));
+//	//mat3d = mat3d.Invert(mat3d.transpose());
+//	//stuffs vertex data into a float vector
+//	std::cout << offset << std::endl;
+//	for (int i = 0, j = 0; i < vertices.size() - 2; i += 3, j += 2)
+//	{
+//		
+//		pos.setXYZW(vertices[i], vertices[i + 1], vertices[i + 2], 1);
+//		pos = transform.getPosition() + pos;
+//		
+//		//pos = transform.getPosition() + pos;
+//		
+//
+//		vertexdata.push_back(pos.getX());
+//		vertexdata.push_back(pos.getY());
+//		vertexdata.push_back(pos.getZ());
+//
+//		vertexdata.push_back(texCoords[j]);
+//		vertexdata.push_back(texCoords[j + 1]);
+//		
+//		normals.setXYZW(normals[i], normals[i + 1], normals[i + 2], 0);
+//
+//
+//
+//		normals = normals.unitVector( /*mat3d **/ normals);
+//		vertexdata.push_back(normals.getX());
+//		vertexdata.push_back(normals.getY());
+//		vertexdata.push_back(normals.getZ());
+//	}
+//
+//
+//	for (int i = 0; i < indices.size(); i++) {
+//		indexdata.push_back(indices[i] + off);
+//	}
+//	std::cout << vertexdata.size() << std::endl;
+//	std::cout << indexdata.size() << std::endl;
+//
+//
+//}
 
 
 void Cylinder::clearArrays()
 {
-	std::vector<float>().swap(vertices);
-	std::vector<float>().swap(normals);
-	std::vector<float>().swap(texCoords);
-	std::vector<unsigned int>().swap(indices);
-	std::vector<unsigned int>().swap(lineIndices);
+	//std::vector<float>().swap(vertices);
+	//std::vector<float>().swap(normals);
+	//std::vector<float>().swap(texCoords);
+	vertices.clear();
+	normals.clear();
+	texCoords.clear();
+	//std::vector<unsigned int>().swap(indices);
+	//std::vector<unsigned int>().swap(lineIndices);
+	indices.clear();
+	lineIndices.clear();
 }
 
 void Cylinder::addTexCoord(float s, float t)
@@ -276,6 +340,32 @@ void Cylinder::buildVertices()
 	}
 
 }
+void Cylinder::set(float baseRadius, float topRadius, float height, int sectors,
+	int stacks, bool smooth, Vector4D position)
+{
+	this->baseRadius = baseRadius;
+	this->topRadius = topRadius;
+	this->height = height;
+	this->sectorCount = sectors;
+	if (sectors < MIN_SECTOR_COUNT)
+		this->sectorCount = MIN_SECTOR_COUNT;
+	this->stackCount = stacks;
+	if (stacks < MIN_STACK_COUNT)
+		this->stackCount = MIN_STACK_COUNT;
+	this->smooth = smooth;
+
+	// generate unit circle vertices first
+	buildUnitCircleVertices();
+
+	if (smooth) { buildVerticesSmooth(); }
+
+	else {//buildVerticesFlat();
+	}
+	printSelf();
+
+}
+
+
 
 void Cylinder::set(float baseRadius, float topRadius, float height, int sectors,
 	int stacks, bool smooth)

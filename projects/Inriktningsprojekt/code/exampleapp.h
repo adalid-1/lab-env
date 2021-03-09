@@ -31,13 +31,15 @@ public:
 
 	std::vector<GraphicsNode> nodeList;
 	std::vector<GraphicsNode> LeafList;
-	GraphicsNode Gnode;
+	GraphicsNode* Gnode;
 	GraphicsNode LeafNode;
 	LightNode Light;
 private:
 
 	/// show some ui things
 	void RenderUI();
+	void setupTreeGraphicsNode();
+	void rebuildModel();
 	// show some nanovg stuff
 	void RenderNano(NVGcontext* vg);
 

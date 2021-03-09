@@ -37,7 +37,7 @@ public:
 	std::vector<int> branches;
 
 	//Index to successor within the same branch
-	int successor;
+	int successor = -1;
 
 	int nrOfSuccessors = 0;
 
@@ -115,6 +115,18 @@ public:
 	void calculatePoints(int angleRandRange = 0, int branchRandRange = 0);
 	//Does everything that needs to be done when a segment is added
 	void addSegment(Segment s);
+
+	int checkSuccessors(int index) {
+		int nr = 0;
+		if (segmentList[index].successor != -1) {
+			nr++;
+			nr + checkSuccessors(segmentList[index].successor);
+			return nr;
+		}
+		else return 0;
+
+	}
+	int successorsMain;
 
 };
 

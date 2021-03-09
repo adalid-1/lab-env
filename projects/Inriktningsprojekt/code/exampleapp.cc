@@ -125,15 +125,16 @@ bool ImGuiExampleApp::Open()
 		treeGenerator.setRules(treeGenerator.generateProductions(lista));
 		//skicka in statiska regler
 		treeGenerator.setRules(lista2);
-		treeGenerator.setN(4);
+		treeGenerator.setN(2);
 		treeGenerator.buildTree(treeGenerator.getN(), 0, 0);
+		Gnode = new GraphicsNode();
 		//Making resources
-		Gnode.pointerSetup();
+		Gnode->pointerSetup();
 		//Setting up mesh, texture and shader resources
 		//Gnode.setup();
 		
 		
-		Gnode.setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
+		Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
 		//Making resources
 		LeafNode.pointerSetup();
 		//Setting up mesh, texture and shader resources
@@ -145,7 +146,7 @@ bool ImGuiExampleApp::Open()
 
 
 		//Setup graphics 
-		treeGenerator.setupGraphicsNodes(nodeList, LeafList, LeafNode, Gnode, 0, 0);
+		treeGenerator.setupGraphicsNodes(nodeList, LeafList, LeafNode, *Gnode, 0, 0);
 	
 
 		// set ui rendering function
@@ -350,7 +351,7 @@ ImGuiExampleApp::Run()
 					}
 					else {
 
-						Gnode.transform = Gnode.transform.RotationY(-angle) * Gnode.transform;
+						Gnode->transform = Gnode->transform.RotationY(-angle) * Gnode->transform;
 					}
 				}
 				else if (mouseDx < -deltaTreshold)
@@ -364,16 +365,16 @@ ImGuiExampleApp::Run()
 					}
 					else {
 
-						Gnode.transform = Gnode.transform.RotationY(angle) * Gnode.transform;
+						Gnode->transform = Gnode->transform.RotationY(angle) * Gnode->transform;
 					}
 				}
 				else {
 					if (mouseDy < -deltaTreshold) {
-						Gnode.transform = Gnode.transform.RotationX(angle) * Gnode.transform;
+						Gnode->transform = Gnode->transform.RotationX(angle) * Gnode->transform;
 					}
 					else if (mouseDy > deltaTreshold)
 					{
-						Gnode.transform = Gnode.transform.RotationX(-angle) * Gnode.transform;
+						Gnode->transform = Gnode->transform.RotationX(-angle) * Gnode->transform;
 					}
 				}
 			}
@@ -387,22 +388,22 @@ ImGuiExampleApp::Run()
 
 		//Don´t really know
 		this->window->Update();
-		Gnode.ShaderO->UseProgram();
+		Gnode->ShaderO->UseProgram();
 		//Sending stuff to shaders
-		Gnode.ShaderO->ModMat4fv("view", myCam.view);
-		Gnode.ShaderO->ModMat4fv("projection", myCam.projection.transpose());
-		Gnode.ShaderO->ModVec3f("cam_pos", Vector4D(myCam.view.get(3), myCam.view.get(7), myCam.view.get(11), 1.0));
+		Gnode->ShaderO->ModMat4fv("view", myCam.view);
+		Gnode->ShaderO->ModMat4fv("projection", myCam.projection.transpose());
+		Gnode->ShaderO->ModVec3f("cam_pos", Vector4D(myCam.view.get(3), myCam.view.get(7), myCam.view.get(11), 1.0));
 
-		Light.sendValuesToUniform(*Gnode.getShaderO());
+		Light.sendValuesToUniform(*Gnode->getShaderO());
 
 		//draw 
-		Gnode.draw();
+		Gnode->draw();
 		//for (int i = 0; i < nodeList.size(); i++) {
 
 		//	
 		//	nodeList[i].draw();
 		//}
-	/*
+	
 		//Swap to leaf shader resoruce
 		LeafNode.ShaderO->UseProgram();
 		LeafNode.ShaderO->ModMat4fv("view", myCam.view);
@@ -416,7 +417,7 @@ ImGuiExampleApp::Run()
 			}
 		}
 
-		*/
+		
 		// transfer new frame to window
 		this->window->SwapBuffers();
 	}
@@ -431,18 +432,18 @@ void ImGuiExampleApp::RenderUI()
 		ImGui::Begin("Shader Sources", &show, ImGuiWindowFlags_NoSavedSettings);
 
 		// create text editors for shader code
-		ImGui::InputTextMultiline("Vertex Shader", Gnode.ShaderO->vsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
+		ImGui::InputTextMultiline("Vertex Shader", Gnode->ShaderO->vsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
 			ImGuiInputTextFlags_AllowTabInput);
 		
-		ImGui::InputTextMultiline("Pixel Shader", Gnode.ShaderO->fsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
+		ImGui::InputTextMultiline("Pixel Shader", Gnode->ShaderO->fsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
 			ImGuiInputTextFlags_AllowTabInput);
 
 		// apply button
 		if (ImGui::Button("Apply"))
 		{
 			// if pressed we compile the shaders
-			Gnode.ShaderO->CompileShaders();
-			Gnode.ShaderO->UseProgram();
+			Gnode->ShaderO->CompileShaders();
+			Gnode->ShaderO->UseProgram();
 			LeafNode.ShaderO->CompileShaders();
 			LeafNode.ShaderO->UseProgram();
 
@@ -484,23 +485,43 @@ void ImGuiExampleApp::RenderUI()
 		if (ImGui::Button("DoSmth"))
 		{
 			if (treeGenerator.getN() > 0){
-			treeGenerator.setupGraphicsNodes(nodeList, LeafList, LeafNode, Gnode, 0 ,0);
-			//treeGenerator.setN(treeGenerator.getN());
-			//treeGenerator.buildTree(treeGenerator.getN(), 0, 0);
-			
 
-			//std::cout << treeGenerator.getN();
+				rebuildModel();
+	
 			std::cout << treeGenerator.lSysInt.segmentList.size() << std::endl;
 			}
 			std::cout << treeGenerator.getN() << std::endl;
 		}
-		if (Gnode.ShaderO->compilerLog.length())
+		if (Gnode->ShaderO->compilerLog.length())
 		{
 			// if compilation produced any output we display it here
-			ImGui::TextWrapped(Gnode.ShaderO->compilerLog.c_str());
+			ImGui::TextWrapped(Gnode->ShaderO->compilerLog.c_str());
 		}
 		// close window
 		ImGui::End();
 	}
 }
+
+
+void ImGuiExampleApp::setupTreeGraphicsNode() {
+
+
+}
+
+void ImGuiExampleApp::rebuildModel() {
+
+
+
+	//delete Gnode;
+
+
+	Gnode = new GraphicsNode();
+	treeGenerator.buildTree(treeGenerator.getN(), 0, 0);
+	Gnode->pointerSetup();
+
+	Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
+
+	treeGenerator.setupGraphicsNodes(nodeList, LeafList, LeafNode, *Gnode, 0, 0);
+}
+
 } // namespace Example
