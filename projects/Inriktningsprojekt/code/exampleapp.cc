@@ -429,60 +429,124 @@ void ImGuiExampleApp::RenderUI()
 	{
 		bool show = true;
 		// create a new window
-		ImGui::Begin("Shader Sources", &show, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Begin("Tree UI", &show, ImGuiWindowFlags_NoSavedSettings);
 
 		// create text editors for shader code
-		ImGui::InputTextMultiline("Vertex Shader", Gnode->ShaderO->vsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
-			ImGuiInputTextFlags_AllowTabInput);
+		//ImGui::InputTextMultiline("Vertex Shader", Gnode->ShaderO->vsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
+		//	ImGuiInputTextFlags_AllowTabInput);
 		
-		ImGui::InputTextMultiline("Pixel Shader", Gnode->ShaderO->fsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
-			ImGuiInputTextFlags_AllowTabInput);
+		//ImGui::InputTextMultiline("Pixel Shader", Gnode->ShaderO->fsBuffer, STRING_BUFFER_SIZE, ImVec2(-1.0f, ImGui::GetTextLineHeight() * 16),
+		//	ImGuiInputTextFlags_AllowTabInput);
 
 		// apply button
-		if (ImGui::Button("Apply"))
-		{
-			// if pressed we compile the shaders
-			Gnode->ShaderO->CompileShaders();
-			Gnode->ShaderO->UseProgram();
-			LeafNode.ShaderO->CompileShaders();
-			LeafNode.ShaderO->UseProgram();
+		//if (ImGui::Button("Apply"))
+		//{
+		//	// if pressed we compile the shaders
+		//	Gnode->ShaderO->CompileShaders();
+		//	Gnode->ShaderO->UseProgram();
+		//	LeafNode.ShaderO->CompileShaders();
+		//	LeafNode.ShaderO->UseProgram();
 
-		}
-
+		//}
+			
+		ImGui::Text("Value of N         ");
+		ImGui::SameLine();
 		if (ImGui::Button("AddN"))
 		{
 			// if pressed we compile the shaders
 			treeGenerator.setN(treeGenerator.getN() + 1);
 
 		}
+		ImGui::SameLine();
 		if (ImGui::Button("SubN"))
 		{
 			// if pressed we compile the shaders
 			treeGenerator.setN(treeGenerator.getN() - 1);
 
 		}
-		if (ImGui::Button("AddNr"))
+
+		ImGui::Text("Value of Length    ");
+		ImGui::SameLine();
+		if (ImGui::Button("Add Length"))
 		{
 			// if pressed we compile the shaders
-			nr++;
+			//treeGenerator.setN(treeGenerator.getN() + 1);
 
 		}
-		if (ImGui::Button("ResetNr"))
+		ImGui::SameLine();
+		if (ImGui::Button("Sub Length"))
 		{
 			// if pressed we compile the shaders
-			nr = 0;
+			//treeGenerator.setN(treeGenerator.getN() - 1);
 
-		}
-		if (ImGui::Button("Toggle leaves"))
+		}		
+		ImGui::Text("Random range Length");
+		ImGui::SameLine();
+		if (ImGui::Button("Add"))
 		{
 			// if pressed we compile the shaders
-			if (drawLeaf) { drawLeaf = false; }
-			else { drawLeaf = true; }
+			treeGenerator.setN(treeGenerator.getN() + 1);
 
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Sub"))
+		{
+			// if pressed we compile the shaders
+			treeGenerator.setN(treeGenerator.getN() - 1);
+
+		}
+
+
+		ImGui::Text("Value of Angle     ");
+		ImGui::SameLine();
+		if (ImGui::Button("Add Degrees"))
+		{
+			// if pressed we compile the shaders
+			treeGenerator.setN(treeGenerator.getN() + 1);
+
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Sub Degrees"))
+		{
+			// if pressed we compile the shaders
+			treeGenerator.setN(treeGenerator.getN() - 1);
+
+		}
+		ImGui::Text("Random range Angle ");
+		ImGui::SameLine();
+		if (ImGui::Button("Add"))
+		{
+			// if pressed we compile the shaders
+			treeGenerator.setN(treeGenerator.getN() + 1);
+
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Sub"))
+		{
+			// if pressed we compile the shaders
+			treeGenerator.setN(treeGenerator.getN() - 1);
+
+		}
+
+		//if (ImGui::Button("AddNr"))
+		//{
+		//	// if pressed we compile the shaders
+		//	nr++;
+
+		//}
+		//if (ImGui::Button("ResetNr"))
+		//{
+		//	// if pressed we compile the shaders
+		//	nr = 0;
+
+		//}
+	
+	
+
+	//	ImGui::SameLine();
 
 		// apply button
-		if (ImGui::Button("DoSmth"))
+		if (ImGui::Button("Apply"))
 		{
 			if (treeGenerator.getN() > 0){
 
@@ -492,6 +556,15 @@ void ImGuiExampleApp::RenderUI()
 			}
 			std::cout << treeGenerator.getN() << std::endl;
 		}
+
+		if (ImGui::Button("Toggle leaves"))
+		{
+			// if pressed we compile the shaders
+			if (drawLeaf) { drawLeaf = false; }
+			else { drawLeaf = true; }
+
+		}
+
 		if (Gnode->ShaderO->compilerLog.length())
 		{
 			// if compilation produced any output we display it here
