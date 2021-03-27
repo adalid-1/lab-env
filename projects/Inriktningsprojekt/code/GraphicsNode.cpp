@@ -49,11 +49,11 @@ void GraphicsNode::setup(const char* modelPath, const char* texturePath)
 
 }
 
-void GraphicsNode::setupAndGenerateTree(std::vector<Segment> segmentList)
+void GraphicsNode::setupAndGenerateTree(std::vector<Segment> segmentList, bool shadedSmooth)
 {
 	//load obj 
 
-	meshR->genTreeModel(segmentList);
+	meshR->genTreeModel(segmentList, shadedSmooth);
 	//Sets up vao, index och vertexbuffer
 	meshR->SetupVertexArrayObject();
 	//Setting up texture

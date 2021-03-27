@@ -12,6 +12,6 @@ class TreeModelBuilder {
 	std::vector<float> vertices;
 	std::vector<GLuint> indices; 
 
-	void buildTreeModel(std::vector<Segment> treeSegments);
+	void buildTreeModel(std::vector<Segment> treeSegments, bool shadedSmooth);
 
 };

@@ -74,7 +74,7 @@ public:
 
 	void setupCylinderModel(); 
 
-	void genTreeModel(std::vector<Segment> segments);
+	void genTreeModel(std::vector<Segment> segments, bool shadedSmooth);
 
 	TreeModelBuilder* trb;
 

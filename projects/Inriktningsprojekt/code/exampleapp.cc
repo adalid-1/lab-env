@@ -6,21 +6,19 @@
 #include "exampleapp.h"
 #include <cstring>
 #include "imgui.h"
-#include "MeshResource.h"
-#include "Matrix4D.h"
-#include "Vector4D.h"
-#include "TextureResource.h"
-#include "Camera.h"
-#include "ObjLoader.h"
-#include "LightNode.h"
-#include "Lsystem.h"
-#include "LsystemPart.h"
+
 //#include "json.hpp"
 
 #define STRING_BUFFER_SIZE 8192
-static Lsystem treeGenerator;
-static bool drawLeaf = false;
-static int nr = 1;
+//static Lsystem treeGenerator;
+//static bool drawLeaf = false;
+//static int nr = 1;
+//static float AngleStep = 0.1;
+//static int randomStep = 1;
+//static float LengthStep = 0.1;
+//static bool* generateProductions = new bool(false);
+//bool* foo;
+
 
 using namespace Display;
 namespace Example
@@ -49,8 +47,8 @@ bool ImGuiExampleApp::Open()
 		//adding comment 
 
 		//Initial rules for L-system
-		std::vector<LsystemPart> lista;
-		std::vector<LsystemPart> lista2;
+		
+		
 		{
 			//Makes nice random trees 
 			/*
@@ -118,8 +116,8 @@ bool ImGuiExampleApp::Open()
 			lista2.push_back(simple1);
 			lista2.push_back(simple2);
 			lista2.push_back(simple3);
-			//lista2.push_back(simple4);
-		//	lista2.push_back(simple5);
+			lista2.push_back(simple4);
+			lista2.push_back(simple5);
 		}
 		//generera regler
 		treeGenerator.setRules(treeGenerator.generateProductions(lista));
@@ -134,7 +132,7 @@ bool ImGuiExampleApp::Open()
 		//Gnode.setup();
 		
 		
-		Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
+		Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList, shadedSmooth);
 		//Making resources
 		LeafNode.pointerSetup();
 		//Setting up mesh, texture and shader resources
@@ -471,6 +469,8 @@ void ImGuiExampleApp::RenderUI()
 		{
 			// if pressed we compile the shaders
 			//treeGenerator.setN(treeGenerator.getN() + 1);
+			treeGenerator.lSysInt.setDist(treeGenerator.lSysInt.getDist() + LengthStep);
+
 
 		}
 		ImGui::SameLine();
@@ -478,6 +478,7 @@ void ImGuiExampleApp::RenderUI()
 		{
 			// if pressed we compile the shaders
 			//treeGenerator.setN(treeGenerator.getN() - 1);
+			treeGenerator.lSysInt.setDist(treeGenerator.lSysInt.getDist() - LengthStep);
 
 		}		
 		ImGui::Text("Random range Length");
@@ -485,14 +486,15 @@ void ImGuiExampleApp::RenderUI()
 		if (ImGui::Button("Add"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() + 1);
+			//treeGenerator.setN(treeGenerator.getN() + 1);		
+			treeGenerator.lSysInt.setLengthRandRange(treeGenerator.lSysInt.getLengthRandRange() + randomStep);
 
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Sub"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() - 1);
+			treeGenerator.lSysInt.setLengthRandRange(treeGenerator.lSysInt.getLengthRandRange() - randomStep);
 
 		}
 
@@ -502,29 +504,30 @@ void ImGuiExampleApp::RenderUI()
 		if (ImGui::Button("Add Degrees"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() + 1);
+			treeGenerator.lSysInt.setAngle(treeGenerator.lSysInt.getAngle() + AngleStep);
 
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Sub Degrees"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() - 1);
+			treeGenerator.lSysInt.setAngle(treeGenerator.lSysInt.getAngle() - AngleStep);
 
 		}
 		ImGui::Text("Random range Angle ");
 		ImGui::SameLine();
-		if (ImGui::Button("Add"))
+		if (ImGui::Button("Add rand angle"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() + 1);
+			//treeGenerator.setN(treeGenerator.getN() + 1);		
+			treeGenerator.lSysInt.setAngleRandRange(treeGenerator.lSysInt.getAngleRandRange() + randomStep);
 
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("Sub"))
+		if (ImGui::Button("Sub rand angle"))
 		{
 			// if pressed we compile the shaders
-			treeGenerator.setN(treeGenerator.getN() - 1);
+			treeGenerator.lSysInt.setAngleRandRange(treeGenerator.lSysInt.getAngleRandRange() - randomStep);
 
 		}
 
@@ -548,6 +551,12 @@ void ImGuiExampleApp::RenderUI()
 		// apply button
 		if (ImGui::Button("Apply"))
 		{
+			
+			if (*generateProductions)
+			{
+				treeGenerator.setRules( treeGenerator.generateProductions(lista));
+				std::cout << *generateProductions << std::endl; 
+			}
 			if (treeGenerator.getN() > 0){
 
 				rebuildModel();
@@ -564,12 +573,23 @@ void ImGuiExampleApp::RenderUI()
 			else { drawLeaf = true; }
 
 		}
+		
+		ImGui::Checkbox("Generate productions", generateProductions);
+		ImGui::Checkbox("Shaded smooth", shadedSmooth);
 
 		if (Gnode->ShaderO->compilerLog.length())
 		{
 			// if compilation produced any output we display it here
 			ImGui::TextWrapped(Gnode->ShaderO->compilerLog.c_str());
 		}
+
+		if (ImGui::Button("Export model"))
+		{
+			// if pressed we compile the shaders
+			std::cout << "I do nothing, lel" << std::endl;
+
+		}
+
 		// close window
 		ImGui::End();
 	}
@@ -592,7 +612,7 @@ void ImGuiExampleApp::rebuildModel() {
 	treeGenerator.buildTree(treeGenerator.getN(), 0, 0);
 	Gnode->pointerSetup();
 
-	Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList);
+	Gnode->setupAndGenerateTree(treeGenerator.lSysInt.segmentList, *shadedSmooth);
 
 	treeGenerator.setupGraphicsNodes(nodeList, LeafList, LeafNode, *Gnode, 0, 0);
 }

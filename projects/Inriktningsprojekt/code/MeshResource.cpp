@@ -205,10 +205,10 @@ void MeshResource::setupCylinderModel()
 	delete cylinder; 
 }
 
-void MeshResource::genTreeModel(std::vector<Segment> segments)
+void MeshResource::genTreeModel(std::vector<Segment> segments, bool shadedSmooth)
 {
 	trb = new TreeModelBuilder(); 
-	trb->buildTreeModel(segments);
+	trb->buildTreeModel(segments, shadedSmooth);
 	vbufferData = trb->vertices;
 	indexData = trb->indices;
 	vbuf = vbufferData.data();

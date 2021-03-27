@@ -1,17 +1,20 @@
 #include "LsystemInterpreter.h"
 
-float LsystemInterpreter::randomNr(float input, int range)
+float LsystemInterpreter::randomNr(float input, float range)
 {
+
 	//Return if no random range
 	if (range == 0)
 	{
 		return input;
 	}
+	int _range = range * 10;
 	// random nr between 0 and range -1
-	float randomNumber = (rand() % range);
+	float randomNumber = (rand() % (_range));
 	std::cout << randomNumber << std::endl;
+	
 	randomNumber -= 0.5 * range;
-	return input + (randomNumber / 20);
+	return input + (randomNumber/100);
 }
 
 LsystemInterpreter::LsystemInterpreter(std::string sentence_)
@@ -52,14 +55,14 @@ void LsystemInterpreter::rotateZbyAngle(float radians)
 	turtle = turtle * turtle.RotationZ(radians);
 }
 
-void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange)
+void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange)
 {
 	segmentList.clear();
 	//Resets values before running function
 	//Thickness of current segment
 	thicknessFactor = 0;
 	//Length of current segment
-	dist = 2.f;
+	//dist = 2.f;
 	//handle to previously generated segment
 	previous = -1;
 	//handle to segment currently being generated
@@ -97,12 +100,12 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 				//push start position
 				newSeg.position0 = turtle.getPosition();
 				//calculate random length and move halfway
-				newSeg.length = randomNr(dist, branchRandRange);
+				newSeg.length = randomNr(dist, randLength);
 
 
-				//rotateZbyAngle(randomNr(0, angleRandRange ));
+				//rotateZbyAngle(randomNr(0, randAngle ));
 				rotateYbyAngle(randomNr(0, 0));
-				//rotateZbyAngle(randomNr(0, -angleRandRange * 20));
+				//rotateZbyAngle(randomNr(0, -randAngle * 20));
 				moveForwardByDistance(newSeg.length / 2);
 
 				//Push middle transform
@@ -124,11 +127,11 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 
 				//push start position
 				newSeg.position0 = turtle.getPosition();
-				//rotateZbyAngle(randomNr(0, angleRandRange*40));
-				//float rotZ = randomNr(angleRad, angleRandRange);
-				rotateYbyAngle(randomNr(angleRad, angleRandRange));
+				//rotateZbyAngle(randomNr(0, randAngle*40));
+				//float rotZ = randomNr(angleRad, randAngle);
+				rotateYbyAngle(randomNr(angleRad, randAngle));
 
-				newSeg.length = randomNr(dist, branchRandRange);
+				newSeg.length = randomNr(dist, randLength);
 				moveForwardByDistance(newSeg.length / 2);
 				newSeg.transform = turtle;
 				moveForwardByDistance(newSeg.length / 2);
@@ -149,8 +152,8 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 
 				//push start position
 				newSeg.position0 = turtle.getPosition();
-				rotateYbyAngle(randomNr(-angleRad, angleRandRange));
-				newSeg.length = randomNr(dist, branchRandRange);
+				rotateYbyAngle(randomNr(-angleRad, randAngle));
+				newSeg.length = randomNr(dist, randLength);
 				moveForwardByDistance(newSeg.length / 2);
 				newSeg.transform = turtle;
 				moveForwardByDistance(newSeg.length / 2);
@@ -168,8 +171,8 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 
 				//push start position
 				newSeg.position0 = turtle.getPosition();
-				rotateXbyAngle(randomNr(-angleRad, angleRandRange));
-				newSeg.length = randomNr(dist, branchRandRange);
+				rotateXbyAngle(randomNr(-angleRad, randAngle));
+				newSeg.length = randomNr(dist, randLength);
 				moveForwardByDistance(newSeg.length / 2);
 				newSeg.transform = turtle;
 				moveForwardByDistance(newSeg.length / 2);
@@ -186,8 +189,8 @@ void LsystemInterpreter::calculatePoints(int angleRandRange, int branchRandRange
 
 				//push start position
 				newSeg.position0 = turtle.getPosition();
-				rotateXbyAngle(randomNr(angleRad, angleRandRange));
-				newSeg.length = randomNr(dist, branchRandRange);
+				rotateXbyAngle(randomNr(angleRad, randAngle));
+				newSeg.length = randomNr(dist, randLength);
 				moveForwardByDistance(newSeg.length / 2);
 				newSeg.transform = turtle;
 				moveForwardByDistance(newSeg.length / 2);

@@ -34,7 +34,7 @@ public:
 	//Calls setup functions for each resource
 	void setup();
 	void setup(const char* modelPath, const char* texturePath);
-	void setupAndGenerateTree(std::vector<Segment> segmentList);
+	void setupAndGenerateTree(std::vector<Segment> segmentList, bool shadedSmooth);
 	//calls the draw functions required every frame
 	void draw();
 

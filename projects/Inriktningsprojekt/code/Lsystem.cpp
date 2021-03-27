@@ -44,9 +44,9 @@ std::vector<LsystemPart> Lsystem::generateProductions(std::vector<LsystemPart> i
 			if (inputSetUnique[i].getSuccessor()[letter] == '[' || inputSetUnique[i].getSuccessor()[letter] == ']') {
 
 			}
-			else if (letter == 0) {
-				inputSetUnique[i].modifySuccessor('A', letter);
-			}
+			//else if (letter == 0) {
+				//inputSetUnique[i].modifySuccessor('A', letter);
+			//}
 			else {
 
 				int index = randomNr(0, n1);
@@ -92,7 +92,7 @@ void Lsystem::setupGraphicsNodes(std::vector<GraphicsNode>& nodeList, std::vecto
 			tempLeaf.transform.setPosition(lSysInt.segmentList[i].position1);
 			std::cout << "x: " << lSysInt.segmentList[i].position1.getX() << "y: " << lSysInt.segmentList[i].position1.getY() << "z: " << lSysInt.segmentList[i].position1.getZ() << endl;
 			Matrix4D scale = Matrix4D();
-			scale.set(15, 15.f);
+			scale.set(15, 9.f);
 
 			LeafNode.transform = LeafNode.transform * scale;
 			tempLeaf.transform = tempLeaf.transform * scale;
