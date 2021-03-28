@@ -85,16 +85,12 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 
 void Cylinder::clearArrays()
 {
-	std::vector<float>().swap(vertices);
-	std::vector<float>().swap(normals);
-	std::vector<float>().swap(texCoords);
-	std::vector<unsigned int>().swap(indices);
-	std::vector<unsigned int>().swap(lineIndices);
-	//vertices.clear();
-	//normals.clear();
-	//texCoords.clear();
-	//indices.clear();
-	//lineIndices.clear();
+
+	vertices.clear();
+	normals.clear();
+	texCoords.clear();
+	indices.clear();
+	lineIndices.clear();
 }
 
 void Cylinder::addTexCoord(float s, float t)
