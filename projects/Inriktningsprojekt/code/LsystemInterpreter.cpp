@@ -76,13 +76,7 @@ void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange
 	turtle = Matrix4D();
 	rotateXbyAngle(1.5708f);
 
-
-
-
 	//List that saves states when branching off
-	std::vector<Matrix4D> states;
-	std::vector<float> states2;
-	std::vector<int> states3;
 	std::vector<int> branchingPoints;
 
 	for (int i = 0; i < sentence.length(); i++)
@@ -102,33 +96,23 @@ void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange
 				//calculate random length and move halfway
 				newSeg.length = randomNr(dist, randLength);
 
-
-				//rotateZbyAngle(randomNr(0, randAngle ));
 				rotateYbyAngle(randomNr(0, 0));
-				//rotateZbyAngle(randomNr(0, -randAngle * 20));
 				moveForwardByDistance(newSeg.length / 2);
-
 				//Push middle transform
-
 				newSeg.transform = turtle;
 				//move forward the rest of the way
 				moveForwardByDistance(newSeg.length / 2);
-				//push end point and other data
+				//push end point 
 				newSeg.position1 = turtle.getPosition();
-			
-
+				
 				addSegment(newSeg);
 			}
 			//turn right
 			else if (sentence[i] == 'B')
 			{
 				Segment newSeg = Segment();
-
-
 				//push start position
 				newSeg.position0 = turtle.getPosition();
-				//rotateZbyAngle(randomNr(0, randAngle*40));
-				//float rotZ = randomNr(angleRad, randAngle);
 				rotateYbyAngle(randomNr(angleRad, randAngle));
 
 				newSeg.length = randomNr(dist, randLength);
@@ -136,14 +120,9 @@ void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange
 				newSeg.transform = turtle;
 				moveForwardByDistance(newSeg.length / 2);
 
-				//segmentList[posRot.size() - 1].transform = segmentList[posRot.size() - 1].transform * turtle.RotationZ(-rotZ);
 				//push end point and other data
 				newSeg.position1 = turtle.getPosition();
-			
-
 				addSegment(newSeg);
-
-
 			}
 			//turn left
 			else if (sentence[i] == 'C')
@@ -204,24 +183,18 @@ void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange
 			else if (sentence[i] == '[')
 			{
 				if (segmentList[previous].branchDepth < 0) {
+					//Atempt at making branching not occur on bottom of tree, doesn´t work well
 					skipBranch = true;
 				}
 				else {
-
 					branchingPoints.push_back(previous);
 					segmentList[previous].branches.push_back(current);
-					Matrix4D temp(turtle);
-					states.push_back(turtle);
-					//states3.push_back(segmentList.size()-1);
-					//tempSegment.transform = turtle;
-					states2.push_back(segmentList.back().thickness);
-
 					branchLevelTracker++;
 				}
 			}
 		}
 		//end branch
-		if (sentence[i] == ']')
+		 if (sentence[i] == ']')
 		{
 			//Stop skipping if skipping
 			if (skipBranch) {
@@ -259,27 +232,18 @@ void LsystemInterpreter::calculatePoints(int randrangeAngle, int branchRandRange
 				branchLevelTracker--;
 			}
 		}
+		 //Code that reduces segment length further up in the tree
 		//dist -= dist / (segmentLengthReduction * 6 * segmentList[previous].thickness);
 	}
-	
+	//thickness calculation that i made up myself
 	float thickRange = 0.4 * sqrt(segmentList.size()) ;
-	//float step = thickRange / segmentList.size();
+	
 	for (int segment = 0; segment < segmentList.size(); segment++) {
 		segmentList[segment].thickness = (thickRange / ((2 + segmentList[segment].thickness) * 10 ));
-		std::cout << "nr of successors: "<< segmentList[segment].nrOfSuccessors << std::endl;
-		//Matrix4D scalingMat;
-		//scalingMat[0] = segmentList[segment].thickness;
-		//scalingMat[5] = segmentList[segment].thickness;
-		segmentList[segment].length = segmentList[segment].length ;
-		//scalingMat[15] = 3;
-
-
-		//segmentList[segment].transform = segmentList[segment].transform * scalingMat;
 	}
 
 	successorsMain = checkSuccessors(1);
 	std::cout << "successors main: " << successorsMain << std::endl;
-
 }
 
 void LsystemInterpreter::addSegment(Segment s)

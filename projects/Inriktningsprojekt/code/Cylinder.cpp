@@ -40,7 +40,7 @@ void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& ve
 
 void Cylinder::formatData(std::vector<GLuint>& indexdata, std::vector<float>& vertexdata, int offset, Matrix4D transform)
 {
-	int off = offset * 63;
+	int off = offset * (vertices.size()/3);
 	std::cout << transform.getPosition().getX() << "-" << transform.getPosition().getY() << "-" << transform.getPosition().getZ() << std::endl;
 	//stuffs vertex data into a float vector
 	Matrix4D mat3d = transform;
